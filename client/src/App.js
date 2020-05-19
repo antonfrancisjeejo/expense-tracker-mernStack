@@ -1,22 +1,21 @@
 import React from "react";
-import { Header } from "./components/Header/Header";
-import Balance from "./components/Balance/Balance";
-import "./App.css";
-import IncomeExpenses from "./components/IncomeExpenses/IncomeExpenses";
-import TransactionList from "./components/TransactionList/TransactionList";
-import AddTransaction from "./components/AddTransaction/AddTransaction";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import GlobalProvider from "./context/GlobalState";
+import Home from "./components/Home/Home";
+import Login from "./components/Login/Login";
+import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 
 function App() {
   return (
     <GlobalProvider>
-      <Header />
-      <div className="container">
-        <Balance />
-        <IncomeExpenses />
-        <TransactionList />
-        <AddTransaction />
-      </div>
+      <Router>
+        <div>
+          <Switch>
+            <Route path="/" exact component={Login} />
+            <PrivateRoute exact path="/home/:id" component={Home} />
+          </Switch>
+        </div>
+      </Router>
     </GlobalProvider>
   );
 }
