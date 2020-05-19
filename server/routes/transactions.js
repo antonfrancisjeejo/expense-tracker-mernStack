@@ -4,12 +4,15 @@ const {
   getTransactions,
   addTransaction,
   deleteTransaction,
+  updateTransaction,
 } = require("../controllers/transactions");
 
 //routes to the home route when a get request is send and call the getTrnsactions
-router.route("/").get(getTransactions).post(addTransaction);
+router.route("/:id").get(getTransactions).patch(updateTransaction);
+
+router.route("/").post(addTransaction);
 
 //routes only after the route in main server like /api/v1/transactions/:id
-router.route("/:id").delete(deleteTransaction);
+router.route("/:userId/:id").patch(deleteTransaction);
 
 module.exports = router;
