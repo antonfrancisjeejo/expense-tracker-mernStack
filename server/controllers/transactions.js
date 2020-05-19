@@ -5,11 +5,16 @@ const Transaction = require("../models/Transaction");
 
 exports.getTransactions = async (req, res, next) => {
   try {
-    const transactions = await Transaction.find();
+    const transaction = await Transaction.findById(req.params.id);
+    if (!transaction) {
+      return res.status(404).json({
+        success: false,
+        error: "No transaction found",
+      });
+    }
     return res.status(200).json({
       success: true,
-      count: transactions.length,
-      data: transactions,
+      data: transaction,
     });
   } catch (err) {
     return res.status(500).json({
@@ -51,7 +56,10 @@ exports.addTransaction = async (req, res, next) => {
 
 exports.deleteTransaction = async (req, res, next) => {
   try {
-    const transaction = await Transaction.findById(req.params.id);
+    const transaction = await Transaction.updateOne(
+      { _id: req.params.userId },
+      { $pull: { transactions: { _id: req.params.id } } }
+    );
 
     if (!transaction) {
       return res.status(404).json({
@@ -59,12 +67,34 @@ exports.deleteTransaction = async (req, res, next) => {
         error: "No transaction found",
       });
     }
-
-    await transaction.remove();
-
     return res.status(200).json({
       success: true,
-      data: {},
+      data: transaction,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      error: "Server error",
+    });
+  }
+};
+
+exports.updateTransaction = async (req, res, next) => {
+  try {
+    const transaction = await Transaction.updateOne(
+      { _id: req.params.id },
+      { $push: { transactions: req.body } }
+    );
+
+    if (!transaction) {
+      return res.status(404).json({
+        success: false,
+        error: "No transaction found",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      data: transaction,
     });
   } catch (err) {
     return res.status(500).json({
