@@ -4,10 +4,12 @@ import "./TransactionList.css";
 import Transaction from "../Transaction/Transaction";
 
 const TransactionList = () => {
-  const { transactions, getTransactions } = useContext(GlobalContext);
+  const { transactions, getTransactions, currentUser } = useContext(
+    GlobalContext
+  );
 
   useEffect(() => {
-    getTransactions();
+    getTransactions(currentUser.uid);
     // eslint-disable-next-line
   }, []);
 
@@ -15,10 +17,8 @@ const TransactionList = () => {
     <>
       <h3>History</h3>
       <ul className="list">
-        {transactions.map((transaction) => {
-          return (
-            <Transaction key={transaction._id} transaction={transaction} />
-          );
+        {transactions.map((transaction, index) => {
+          return <Transaction key={index} transaction={transaction} />;
         })}
       </ul>
     </>
